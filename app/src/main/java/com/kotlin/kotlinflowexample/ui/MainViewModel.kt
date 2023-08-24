@@ -1,14 +1,23 @@
 package com.kotlin.kotlinflowexample.ui
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.count
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.fold
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.reduce
+import kotlinx.coroutines.launch
 
 class MainViewModel : ViewModel() {
 
+    //Producer
     val countDown = flow<Int> {
 
-        val startValue = 10
+        val startValue = 5
         var currentValue = startValue
         emit(startValue)
 
@@ -16,6 +25,39 @@ class MainViewModel : ViewModel() {
             delay(1000)
             currentValue--
             emit(currentValue)
+        }
+    }
+
+    init {
+        collectFlow()
+    }
+
+    private fun collectFlow(){
+
+        //Consumer
+        viewModelScope.launch {
+           val result = countDown
+                .filter {time ->
+                    time % 2 == 0
+                }
+                .map {time ->
+                    time * time
+                }.count()
+            println(result)
+        }
+
+        viewModelScope.launch {
+            val result = countDown.reduce{ accumulator, value ->
+                accumulator + value
+            }
+            println(result)
+        }
+
+        viewModelScope.launch {
+            val result = countDown.fold(20){ accumulator, value ->
+                accumulator + value
+            }
+            println(result)
         }
     }
 }

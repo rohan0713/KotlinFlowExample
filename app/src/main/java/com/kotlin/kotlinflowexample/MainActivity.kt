@@ -26,9 +26,7 @@ class MainActivity : ComponentActivity() {
                 val time = viewModel.countDown.collectAsState(initial = 10)
                 // A surface container using the 'background' color from the theme
                 Box(
-                    modifier = Modifier.also {
-                        it.fillMaxSize()
-                    },
+                    modifier = Modifier.fillMaxSize()
 //                    color = MaterialTheme.colorScheme.background
                 ) {
                     Text(
