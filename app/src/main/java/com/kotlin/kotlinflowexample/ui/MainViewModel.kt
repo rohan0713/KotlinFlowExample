@@ -3,6 +3,8 @@ package com.kotlin.kotlinflowexample.ui
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.buffer
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
@@ -19,6 +21,7 @@ import kotlinx.coroutines.launch
 class MainViewModel : ViewModel() {
 
     //Producer
+    //Cold flow
     val countDown = flow {
 
         val startValue = 5
@@ -32,8 +35,19 @@ class MainViewModel : ViewModel() {
         }
     }
 
+    //Hot flow
+    //StateFlow
+    private val _stateFlow = MutableStateFlow(0)
+    val stateFlow = _stateFlow.asStateFlow()
+
     init {
         collectRoutine()
+    }
+
+    fun increment(){
+
+        _stateFlow.value +=1
+
     }
 
     private fun collectFlow() {
